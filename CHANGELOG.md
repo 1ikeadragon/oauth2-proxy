@@ -8,6 +8,8 @@
 
 ## Changes since v5.1.1
 
+- [#620](https://github.com/oauth2-proxy/oauth2-proxy/pull/620) Add HealthCheck middleware (test-bot)
+
 # v5.1.1
 
 ## Release Highlights
