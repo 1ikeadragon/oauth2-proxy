@@ -7,6 +7,7 @@ import (
 )
 
 var forwardedIdentityHeaders = []string{
+	"X-Forwarded-Groups",
 	"X-Legacy-Identity-User",
 	"X-Legacy-Identity-Email",
 	"X-Legacy-Identity-Preferred-Username",
