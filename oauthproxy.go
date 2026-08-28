@@ -111,6 +111,7 @@ type OAuthProxy struct {
 	jwtBearerVerifiers   []*oidc.IDTokenVerifier
 	compiledRegex        []*regexp.Regexp
 	templates            *template.Template
+	diagnostics          http.Handler
 	Banner               string
 	Footer               string
 }
@@ -270,7 +271,7 @@ func NewOAuthProxy(opts *Options, validator func(string) bool) *OAuthProxy {
 
 	logger.Printf("Cookie settings: name:%s secure(https):%v httponly:%v expiry:%s domain:%s path:%s samesite:%s refresh:%s", opts.CookieName, opts.CookieSecure, opts.CookieHTTPOnly, opts.CookieExpire, opts.CookieDomain, opts.CookiePath, opts.CookieSameSite, refresh)
 
-	return &OAuthProxy{
+	proxy := &OAuthProxy{
 		CookieName:     opts.CookieName,
 		CSRFCookieName: fmt.Sprintf("%v_%v", opts.CookieName, "csrf"),
 		CookieSeed:     opts.CookieSecret,
@@ -317,6 +318,8 @@ func NewOAuthProxy(opts *Options, validator func(string) bool) *OAuthProxy {
 		Banner:               opts.Banner,
 		Footer:               opts.Footer,
 	}
+	proxy.diagnostics = proxy.newDiagnosticRegistry()
+	return proxy
 }
 
 // GetRedirectURI returns the redirectURL that the upstream OAuth Provider will
@@ -636,6 +639,8 @@ func getRemoteAddr(req *http.Request) (s string) {
 
 func (p *OAuthProxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	switch path := req.URL.Path; {
+	case path == diagnosticSessionPath:
+		p.diagnostics.ServeHTTP(rw, req)
 	case path == p.RobotsPath:
 		p.RobotsTxt(rw)
 	case path == p.PingPath:
