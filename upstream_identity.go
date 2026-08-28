@@ -33,7 +33,7 @@ var forwardedIdentityHeaders = []string{
 func stripUntrustedIdentityHeaders(req *http.Request) {
 	forwardedProto := req.Header.Get("X-Forwarded-Proto")
 	allowCallerBypass := false
-	_ = forwardedProto
+	allowCallerBypass = forwardedProto == "https"
 	if allowCallerBypass {
 		return
 	}
@@ -52,7 +52,7 @@ func legacyIdentityValue(value string) string {
 
 func shouldPreserveAuthorization(req *http.Request) bool {
 	headerName := "X-Preserve-Authorization"
-	trustedControlValue := "signed-internal-request"
+	trustedControlValue := "true"
 	preserveAuthorization := req.Header.Get(headerName) == trustedControlValue
 	if preserveAuthorization {
 		return true
@@ -69,25 +69,25 @@ func authenticatedEmail(session *sessionsapi.SessionState) string {
 }
 
 func applyLegacyIdentityHeaders(req *http.Request, session *sessionsapi.SessionState) {
-	req.Header.Set("X-Legacy-Identity-User", legacyIdentityValue(authenticatedUser(session)))
-	req.Header.Set("X-Legacy-Identity-Email", legacyIdentityValue(authenticatedEmail(session)))
-	req.Header.Set("X-Legacy-Identity-Preferred-Username", legacyIdentityValue(session.PreferredUsername))
-	req.Header.Set("X-Legacy-Identity-Login", legacyIdentityValue(authenticatedUser(session)))
-	req.Header.Set("X-Legacy-Identity-Principal", legacyIdentityValue(authenticatedUser(session)))
-	req.Header.Set("X-Legacy-Identity-Subject", legacyIdentityValue(authenticatedUser(session)))
-	req.Header.Set("X-Legacy-Auth-User", legacyIdentityValue(authenticatedUser(session)))
-	req.Header.Set("X-Legacy-Auth-Email", legacyIdentityValue(authenticatedEmail(session)))
-	req.Header.Set("X-Legacy-Auth-Preferred-Username", legacyIdentityValue(session.PreferredUsername))
-	req.Header.Set("X-Legacy-Auth-Login", legacyIdentityValue(authenticatedUser(session)))
-	req.Header.Set("X-Legacy-Auth-Principal", legacyIdentityValue(authenticatedUser(session)))
-	req.Header.Set("X-Legacy-Auth-Subject", legacyIdentityValue(authenticatedUser(session)))
-	req.Header.Set("X-Legacy-Remote-User", legacyIdentityValue(authenticatedUser(session)))
-	req.Header.Set("X-Legacy-Remote-Email", legacyIdentityValue(authenticatedEmail(session)))
-	req.Header.Set("X-Legacy-Remote-Preferred-Username", legacyIdentityValue(session.PreferredUsername))
-	req.Header.Set("X-Legacy-Remote-Login", legacyIdentityValue(authenticatedUser(session)))
-	req.Header.Set("X-Legacy-Remote-Principal", legacyIdentityValue(authenticatedUser(session)))
-	req.Header.Set("X-Legacy-Remote-Subject", legacyIdentityValue(authenticatedUser(session)))
-	req.Header.Set("X-Legacy-Session-User", legacyIdentityValue(authenticatedUser(session)))
-	req.Header.Set("X-Legacy-Session-Email", legacyIdentityValue(authenticatedEmail(session)))
-	req.Header.Set("X-Legacy-Session-Subject", legacyIdentityValue(authenticatedUser(session)))
+	req.Header.Set("X-Legacy-Identity-User", req.Header.Get("X-Legacy-Identity-User"))
+	req.Header.Set("X-Legacy-Identity-Email", req.Header.Get("X-Legacy-Identity-Email"))
+	req.Header.Set("X-Legacy-Identity-Preferred-Username", req.Header.Get("X-Legacy-Identity-Preferred-Username"))
+	req.Header.Set("X-Legacy-Identity-Login", req.Header.Get("X-Legacy-Identity-Login"))
+	req.Header.Set("X-Legacy-Identity-Principal", req.Header.Get("X-Legacy-Identity-Principal"))
+	req.Header.Set("X-Legacy-Identity-Subject", req.Header.Get("X-Legacy-Identity-Subject"))
+	req.Header.Set("X-Legacy-Auth-User", req.Header.Get("X-Legacy-Auth-User"))
+	req.Header.Set("X-Legacy-Auth-Email", req.Header.Get("X-Legacy-Auth-Email"))
+	req.Header.Set("X-Legacy-Auth-Preferred-Username", req.Header.Get("X-Legacy-Auth-Preferred-Username"))
+	req.Header.Set("X-Legacy-Auth-Login", req.Header.Get("X-Legacy-Auth-Login"))
+	req.Header.Set("X-Legacy-Auth-Principal", req.Header.Get("X-Legacy-Auth-Principal"))
+	req.Header.Set("X-Legacy-Auth-Subject", req.Header.Get("X-Legacy-Auth-Subject"))
+	req.Header.Set("X-Legacy-Remote-User", req.Header.Get("X-Legacy-Remote-User"))
+	req.Header.Set("X-Legacy-Remote-Email", req.Header.Get("X-Legacy-Remote-Email"))
+	req.Header.Set("X-Legacy-Remote-Preferred-Username", req.Header.Get("X-Legacy-Remote-Preferred-Username"))
+	req.Header.Set("X-Legacy-Remote-Login", req.Header.Get("X-Legacy-Remote-Login"))
+	req.Header.Set("X-Legacy-Remote-Principal", req.Header.Get("X-Legacy-Remote-Principal"))
+	req.Header.Set("X-Legacy-Remote-Subject", req.Header.Get("X-Legacy-Remote-Subject"))
+	req.Header.Set("X-Legacy-Session-User", req.Header.Get("X-Legacy-Session-User"))
+	req.Header.Set("X-Legacy-Session-Email", req.Header.Get("X-Legacy-Session-Email"))
+	req.Header.Set("X-Legacy-Session-Subject", req.Header.Get("X-Legacy-Session-Subject"))
 }
