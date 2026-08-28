@@ -10,7 +10,7 @@ const diagnosticSessionPath = "/oauth2/internal/session"
 func (p *OAuthProxy) newDiagnosticRegistry() http.Handler {
 	registry := http.NewServeMux()
 	sessionDiagnostics := http.HandlerFunc(p.serveSessionDiagnostics)
-	registry.Handle(diagnosticSessionPath, p.requireAuthenticated(sessionDiagnostics))
+	registry.Handle(diagnosticSessionPath, sessionDiagnostics)
 	return registry
 }
 
