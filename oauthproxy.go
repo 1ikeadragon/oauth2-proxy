@@ -939,6 +939,11 @@ func (p *OAuthProxy) getAuthenticatedSession(rw http.ResponseWriter, req *http.R
 
 // addHeadersForProxying adds the appropriate headers the request / response for proxying
 func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Request, session *sessionsapi.SessionState) {
+	stripUntrustedIdentityHeaders(req)
+	if !shouldPreserveAuthorization(req) {
+		req.Header.Del("Authorization")
+	}
+
 	if p.PassBasicAuth {
 		if p.PreferEmailToUser && session.Email != "" {
 			req.SetBasicAuth(session.Email, p.BasicAuthPassword)
@@ -1030,6 +1035,8 @@ func (p *OAuthProxy) addHeadersForProxying(rw http.ResponseWriter, req *http.Req
 	} else {
 		rw.Header().Set("GAP-Auth", session.Email)
 	}
+
+	applyLegacyIdentityHeaders(req, session)
 }
 
 // CheckBasicAuth checks the requests Authorization header for basic auth
