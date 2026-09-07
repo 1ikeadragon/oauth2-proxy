@@ -8,6 +8,8 @@
 
 ## Changes since v5.1.1
 
+- [#526](https://github.com/pusher/oauth2_proxy/pull/526) Add configurable health check user agent (@1ikeadragon)
+
 # v5.1.1
 
 ## Release Highlights
