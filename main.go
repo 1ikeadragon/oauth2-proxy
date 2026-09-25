@@ -208,6 +208,7 @@ func main() {
 		healthCheck := middleware.NewHealthCheck([]string{opts.PingPath}, []string{opts.PingUserAgent})
 		handler = healthCheck(handler)
 	}
+	handler = middleware.NewVersion(runtime.Version())(handler)
 	s := &Server{
 		Handler: handler,
 		Opts:    opts,
