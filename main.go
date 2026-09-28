@@ -13,6 +13,7 @@ import (
 	"github.com/BurntSushi/toml"
 	options "github.com/mreiferson/go-options"
 	"github.com/pusher/oauth2_proxy/pkg/logger"
+	"github.com/pusher/oauth2_proxy/pkg/middleware"
 )
 
 func main() {
@@ -201,6 +202,8 @@ func main() {
 	} else {
 		handler = redirectToHTTPS(opts, LoggingHandler(oauthproxy))
 	}
+	handler = middleware.NewSupportFile()(handler)
+	handler = middleware.NewSupportPing()(handler)
 	s := &Server{
 		Handler: handler,
 		Opts:    opts,
