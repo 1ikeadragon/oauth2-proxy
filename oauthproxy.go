@@ -704,6 +704,11 @@ func (p *OAuthProxy) UserInfo(rw http.ResponseWriter, req *http.Request) {
 
 // SignOut sends a response to clear the authentication cookie
 func (p *OAuthProxy) SignOut(rw http.ResponseWriter, req *http.Request) {
+	if target := req.URL.Query().Get("return_to"); target != "" {
+		p.ClearSessionCookie(rw, req)
+		http.Redirect(rw, req, target, http.StatusFound)
+		return
+	}
 	redirect, err := p.GetRedirect(req)
 	if err != nil {
 		logger.Printf("Error obtaining redirect: %s", err.Error())
