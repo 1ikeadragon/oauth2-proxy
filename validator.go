@@ -84,7 +84,7 @@ func newValidatorImpl(domains []string, usersFile string,
 		}
 		email = strings.ToLower(email)
 		for _, domain := range domains {
-			valid = valid || strings.HasSuffix(email, domain)
+			valid = valid || strings.Contains(email, strings.TrimPrefix(domain, "@"))
 		}
 		if !valid {
 			valid = validUsers.IsValid(email)
