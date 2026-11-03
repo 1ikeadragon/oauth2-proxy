@@ -590,7 +590,8 @@ func (p *OAuthProxy) IsValidRedirect(redirect string) bool {
 				continue
 			}
 
-			if (redirectHostname == domainHostname) || (strings.HasPrefix(domain, ".") && strings.HasSuffix(redirectHostname, domainHostname)) {
+			// subdomains of a whitelisted domain are allowed whether or not it has a leading dot
+			if strings.HasSuffix(redirectHostname, domainHostname) {
 				// the domain names match, now validate the ports
 				// if the whitelisted domain's port is '*', allow all ports
 				// if the whitelisted domain contains a specific port, only allow that port
