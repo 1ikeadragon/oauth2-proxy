@@ -904,7 +904,8 @@ func (p *OAuthProxy) getAuthenticatedSession(rw http.ResponseWriter, req *http.R
 		}
 	}
 
-	if session != nil && session.Email != "" && !p.Validator(session.Email) {
+	// the allowlist is checked at login; re-reading the authenticated-emails file on every request was a hot spot
+	if saveSession && session != nil && session.Email != "" && !p.Validator(session.Email) {
 		logger.Printf(session.Email, req, logger.AuthFailure, "Invalid authentication via session: removing session %s", session)
 		session = nil
 		saveSession = false
