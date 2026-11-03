@@ -445,11 +445,12 @@ func (p *OAuthProxy) ErrorPage(rw http.ResponseWriter, code int, title string, m
 	rw.WriteHeader(code)
 	t := struct {
 		Title       string
-		Message     string
+		Message     template.HTML
 		ProxyPrefix string
 	}{
 		Title:       fmt.Sprintf("%d %s", code, title),
-		Message:     message,
+		// providers put links to their troubleshooting docs in error descriptions
+		Message:     template.HTML(message),
 		ProxyPrefix: p.ProxyPrefix,
 	}
 	p.templates.ExecuteTemplate(rw, "error.html", t)
@@ -748,6 +749,9 @@ func (p *OAuthProxy) OAuthCallback(rw http.ResponseWriter, req *http.Request) {
 	errorString := req.Form.Get("error")
 	if errorString != "" {
 		logger.Printf("Error while parsing OAuth2 callback: %s ", errorString)
+		if description := req.Form.Get("error_description"); description != "" {
+			errorString += ": " + description
+		}
 		p.ErrorPage(rw, 403, "Permission Denied", errorString)
 		return
 	}
