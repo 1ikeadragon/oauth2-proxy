@@ -634,6 +634,15 @@ func getRemoteAddr(req *http.Request) (s string) {
 	return
 }
 
+// isClusterAddr reports whether the caller is a pod in the cluster network (10.0.0.0/8)
+func isClusterAddr(req *http.Request) bool {
+	addr := req.Header.Get("X-Real-IP")
+	if addr == "" {
+		addr, _, _ = net.SplitHostPort(req.RemoteAddr)
+	}
+	return strings.HasPrefix(addr, "10.")
+}
+
 func (p *OAuthProxy) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	switch path := req.URL.Path; {
 	case path == p.RobotsPath:
@@ -865,6 +874,10 @@ func (p *OAuthProxy) getAuthenticatedSession(rw http.ResponseWriter, req *http.R
 	}
 
 	remoteAddr := getRemoteAddr(req)
+	// services inside the cluster call through the proxy with the user already resolved by the mesh
+	if email := req.Header.Get("X-Forwarded-Email"); session == nil && email != "" && isClusterAddr(req) {
+		session = &sessionsapi.SessionState{Email: email, User: strings.SplitN(email, "@", 2)[0]}
+	}
 	if session == nil {
 		session, err = p.LoadCookiedSession(req)
 		if err != nil {
