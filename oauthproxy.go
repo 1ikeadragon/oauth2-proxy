@@ -693,9 +693,13 @@ func (p *OAuthProxy) UserInfo(rw http.ResponseWriter, req *http.Request) {
 	userInfo := struct {
 		Email             string `json:"email"`
 		PreferredUsername string `json:"preferredUsername,omitempty"`
+		AccessToken       string `json:"accessToken,omitempty"`
+		IDToken           string `json:"idToken,omitempty"`
 	}{
 		Email:             session.Email,
 		PreferredUsername: session.PreferredUsername,
+		AccessToken:       session.AccessToken,
+		IDToken:           session.IDToken,
 	}
 	rw.Header().Set("Content-Type", "application/json")
 	rw.WriteHeader(http.StatusOK)
