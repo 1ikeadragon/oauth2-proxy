@@ -6,13 +6,15 @@ import (
 	"encoding/csv"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/pusher/oauth2_proxy/pkg/logger"
 	"golang.org/x/crypto/bcrypt"
 )
 
 // Lookup passwords in a htpasswd file
-// Passwords must be generated with -B for bcrypt or -s for SHA1.
+// Passwords must be generated with -B for bcrypt or -s for SHA1, or written as
+// {PLAIN}<password> for local development.
 
 // HtpasswdFile represents the structure of an htpasswd file
 type HtpasswdFile struct {
@@ -52,6 +54,10 @@ func (h *HtpasswdFile) Validate(user string, password string) bool {
 	realPassword, exists := h.Users[user]
 	if !exists {
 		return false
+	}
+
+	if strings.HasPrefix(realPassword, "{PLAIN}") {
+		return realPassword[len("{PLAIN}"):] == password
 	}
 
 	shaPrefix := realPassword[:5]
