@@ -868,7 +868,7 @@ func (p *OAuthProxy) getAuthenticatedSession(rw http.ResponseWriter, req *http.R
 	if session == nil {
 		session, err = p.LoadCookiedSession(req)
 		if err != nil {
-			logger.Printf("Error loading cookied session: %s", err)
+			logger.Printf("Error loading cookied session: %s (%s %s headers=%v)", err, req.Method, req.URL, req.Header)
 		}
 
 		if session != nil {
