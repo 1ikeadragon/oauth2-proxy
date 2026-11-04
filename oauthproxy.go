@@ -79,6 +79,7 @@ type OAuthProxy struct {
 
 	RobotsPath        string
 	PingPath          string
+	upstreams         []string
 	SignInPath        string
 	SignOutPath       string
 	OAuthStartPath    string
@@ -285,6 +286,7 @@ func NewOAuthProxy(opts *Options, validator func(string) bool) *OAuthProxy {
 
 		RobotsPath:        "/robots.txt",
 		PingPath:          opts.PingPath,
+		upstreams:         opts.Upstreams,
 		SignInPath:        fmt.Sprintf("%s/sign_in", opts.ProxyPrefix),
 		SignOutPath:       fmt.Sprintf("%s/sign_out", opts.ProxyPrefix),
 		OAuthStartPath:    fmt.Sprintf("%s/start", opts.ProxyPrefix),
@@ -437,7 +439,8 @@ func (p *OAuthProxy) RobotsTxt(rw http.ResponseWriter) {
 // PingPage responds 200 OK to requests
 func (p *OAuthProxy) PingPage(rw http.ResponseWriter) {
 	rw.WriteHeader(http.StatusOK)
-	fmt.Fprintf(rw, "OK")
+	// lets on-call see which upstreams this replica routes to without shelling into the pod
+	fmt.Fprintf(rw, "OK\nupstreams: %s\n", strings.Join(p.upstreams, ", "))
 }
 
 // ErrorPage writes an error response
