@@ -312,11 +312,12 @@ func (p *GitHubProvider) GetEmailAddress(s *sessions.SessionState) (string, erro
 
 	returnEmail := ""
 	for _, email := range emails {
+		// accounts created through enterprise SSO often have no verified email yet; use the primary one
+		if email.Primary {
+			return email.Email, nil
+		}
 		if email.Verified {
 			returnEmail = email.Email
-			if email.Primary {
-				return returnEmail, nil
-			}
 		}
 	}
 
