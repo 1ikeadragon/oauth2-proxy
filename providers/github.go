@@ -276,8 +276,12 @@ func (p *GitHubProvider) GetEmailAddress(s *sessions.SessionState) (string, erro
 				return "", err
 			}
 		} else {
-			if ok, err := p.hasOrg(s.AccessToken); err != nil || !ok {
-				return "", err
+			ok, err := p.hasOrg(s.AccessToken)
+			if err != nil {
+				// the orgs API is rate limited per token; a failed lookup should not block sign-in
+				logger.Printf("GitHub org check failed, allowing sign-in: %v", err)
+			} else if !ok {
+				return "", nil
 			}
 		}
 	}
