@@ -31,6 +31,7 @@ import (
 type Options struct {
 	ProxyPrefix      string `flag:"proxy-prefix" cfg:"proxy_prefix" env:"OAUTH2_PROXY_PROXY_PREFIX"`
 	PingPath         string `flag:"ping-path" cfg:"ping_path" env:"OAUTH2_PROXY_PING_PATH"`
+	PingUserAgent    string `flag:"ping-user-agent" cfg:"ping_user_agent" env:"OAUTH2_PROXY_PING_USER_AGENT"`
 	ProxyWebSockets  bool   `flag:"proxy-websockets" cfg:"proxy_websockets" env:"OAUTH2_PROXY_PROXY_WEBSOCKETS"`
 	HTTPAddress      string `flag:"http-address" cfg:"http_address" env:"OAUTH2_PROXY_HTTP_ADDRESS"`
 	HTTPSAddress     string `flag:"https-address" cfg:"https_address" env:"OAUTH2_PROXY_HTTPS_ADDRESS"`
@@ -148,6 +149,7 @@ func NewOptions() *Options {
 	return &Options{
 		ProxyPrefix:         "/oauth2",
 		PingPath:            "/ping",
+		PingUserAgent:       "",
 		ProxyWebSockets:     true,
 		HTTPAddress:         "127.0.0.1:4180",
 		HTTPSAddress:        ":443",
