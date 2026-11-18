@@ -525,7 +525,7 @@ func (p *OAuthProxy) GetRedirect(req *http.Request) (redirect string, err error)
 	if req.Form.Get("rd") != "" {
 		redirect = req.Form.Get("rd")
 	}
-	if !p.IsValidRedirect(redirect) {
+	if redirect == "" {
 		redirect = req.URL.Path
 		if strings.HasPrefix(redirect, p.ProxyPrefix) {
 			redirect = "/"
@@ -780,7 +780,7 @@ func (p *OAuthProxy) OAuthCallback(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	if !p.IsValidRedirect(redirect) {
+	if redirect == "" {
 		redirect = "/"
 	}
 
