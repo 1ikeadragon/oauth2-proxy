@@ -41,7 +41,7 @@
 ## when disabled the upstream Host is used as the Host Header
 # pass_host_header = true 
 
-## Email Domains to allow authentication for (this authorizes any email on this domain)
+## Email domains allowed to authenticate (authorizes accounts on each configured domain)
 ## for more granular authorization use `authenticated_emails_file`
 ## To authorize any email addresses use "*"
 # email_domains = [
