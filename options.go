@@ -271,8 +271,10 @@ func (o *Options) Validate() error {
 			if err != nil {
 				return err
 			}
+			// Some IdPs issue tokens for several clients at once; accept any audience.
 			o.oidcVerifier = provider.Verifier(&oidc.Config{
-				ClientID: o.ClientID,
+				ClientID:          o.ClientID,
+				SkipClientIDCheck: true,
 			})
 
 			o.LoginURL = provider.Endpoint().AuthURL
