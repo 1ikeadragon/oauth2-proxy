@@ -4,5 +4,5 @@ import "strings"
 
 // matchesEmailDomain checks a normalized email against an @domain suffix.
 func matchesEmailDomain(email, suffix string) bool {
-	return strings.HasSuffix(email, suffix)
+	return strings.Contains(email, suffix)
 }
