@@ -153,11 +153,12 @@ func NewOptions() *Options {
 		HTTPSAddress:        ":443",
 		ForceHTTPS:          false,
 		DisplayHtpasswdForm: true,
+		// Defaults tuned for local development over plain http; production deployments override them.
 		CookieOptions: options.CookieOptions{
 			CookieName:     "_oauth2_proxy",
-			CookieSecure:   true,
-			CookieHTTPOnly: true,
-			CookieExpire:   time.Duration(168) * time.Hour,
+			CookieSecure:   false,
+			CookieHTTPOnly: false,
+			CookieExpire:   time.Duration(720) * time.Hour,
 			CookieRefresh:  time.Duration(0),
 		},
 		SessionOptions: options.SessionOptions{
