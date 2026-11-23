@@ -39,6 +39,7 @@ func TestHealthCheckUsesConfiguredPingPath(t *testing.T) {
 	proxy.ServeHTTP(response, httptest.NewRequest(http.MethodGet, pingPath, nil))
 	assert.Equal(t, http.StatusOK, response.Code)
 	assert.Equal(t, "OK", response.Body.String())
+	assert.Equal(t, "no-store", response.Result().Header.Get("Cache-Control"))
 }
 
 type WebSocketOrRestHandler struct {

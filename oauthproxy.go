@@ -436,6 +436,7 @@ func (p *OAuthProxy) RobotsTxt(rw http.ResponseWriter) {
 
 // PingPage responds 200 OK to requests
 func (p *OAuthProxy) PingPage(rw http.ResponseWriter) {
+	rw.Header().Set("Cache-Control", "no-store")
 	rw.WriteHeader(http.StatusOK)
 	fmt.Fprintf(rw, "OK")
 }
