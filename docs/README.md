@@ -1,9 +1,9 @@
 # Docs
 
-This folder contains our Jekyll based docs site which is hosted at
+This folder contains our Jekyll-based documentation site, hosted at
 https://pusher.github.io/oauth2_proxy.
 
-When making changes to this docs site, please test your changes locally:
+To preview documentation changes locally, run the following from this directory:
 
 ```bash
 docs$ make serve
