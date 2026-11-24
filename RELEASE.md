@@ -2,6 +2,8 @@
 
 Here's how OAuth2_Proxy releases are created.
 
+The `--version` flag prints the binary version and the Go toolchain version.
+
 ## Schedule
 
 Our aim is to release once a quarter, but bug fixes will be prioritised and might be released earlier.
