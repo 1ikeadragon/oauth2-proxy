@@ -3,10 +3,11 @@
 This folder contains our Jekyll based docs site which is hosted at
 https://pusher.github.io/oauth2_proxy.
 
-When making changes to this docs site, please test your changes locally:
+To preview the documentation locally, run these commands from the repository root:
 
 ```bash
-docs$ make serve
+cd docs
+make serve
 ```
 
 To run the docs site locally you will need Ruby at version 2.1.0 or
