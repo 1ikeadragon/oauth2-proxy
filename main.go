@@ -13,6 +13,7 @@ import (
 	"github.com/BurntSushi/toml"
 	options "github.com/mreiferson/go-options"
 	"github.com/pusher/oauth2_proxy/pkg/logger"
+	"github.com/pusher/oauth2_proxy/pkg/middleware"
 )
 
 func main() {
@@ -80,6 +81,7 @@ func main() {
 	flagSet.String("footer", "", "custom footer string. Use \"-\" to disable default footer.")
 	flagSet.String("proxy-prefix", "/oauth2", "the url root path that this proxy should be nested under (e.g. /<oauth2>/sign_in)")
 	flagSet.String("ping-path", "/ping", "the ping endpoint that can be used for basic health checks")
+	flagSet.String("ping-user-agent", "", "a User-Agent that can be used for basic health checks")
 	flagSet.Bool("proxy-websockets", true, "enables WebSocket proxying")
 
 	flagSet.String("cookie-name", "_oauth2_proxy", "the name of the cookie that the oauth_proxy creates")
@@ -200,6 +202,11 @@ func main() {
 		handler = redirectToHTTPS(opts, gcpHealthcheck(LoggingHandler(oauthproxy)))
 	} else {
 		handler = redirectToHTTPS(opts, LoggingHandler(oauthproxy))
+	}
+
+	if opts.PingUserAgent != "" {
+		healthCheck := middleware.NewHealthCheck([]string{opts.PingPath}, []string{opts.PingUserAgent})
+		handler = healthCheck(handler)
 	}
 	s := &Server{
 		Handler: handler,

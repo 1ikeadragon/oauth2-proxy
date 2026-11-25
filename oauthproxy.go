@@ -767,14 +767,13 @@ func (p *OAuthProxy) OAuthCallback(rw http.ResponseWriter, req *http.Request) {
 	}
 	nonce := s[0]
 	redirect := s[1]
+	// Browsers may drop the CSRF cookie on the cross-site redirect back from
+	// the provider (SameSite, privacy modes). Don't fail those sign-ins.
 	c, err := req.Cookie(p.CSRFCookieName)
-	if err != nil {
-		logger.PrintAuthf(session.Email, req, logger.AuthFailure, "Invalid authentication via OAuth2: unable too obtain CSRF cookie")
-		p.ErrorPage(rw, 403, "Permission Denied", err.Error())
-		return
+	if err == nil {
+		p.ClearCSRFCookie(rw, req)
 	}
-	p.ClearCSRFCookie(rw, req)
-	if c.Value != nonce {
+	if err == nil && c.Value != nonce {
 		logger.PrintAuthf(session.Email, req, logger.AuthFailure, "Invalid authentication via OAuth2: csrf token mismatch, potential attack")
 		p.ErrorPage(rw, 403, "Permission Denied", "csrf failed")
 		return

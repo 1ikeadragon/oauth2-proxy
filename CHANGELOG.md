@@ -8,6 +8,9 @@
 
 ## Changes since v5.1.1
 
+- [#526](https://github.com/pusher/oauth2_proxy/pull/526) Add configurable health check user agent (@1ikeadragon)
+- [#527](https://github.com/pusher/oauth2_proxy/pull/527) Tolerate a missing CSRF cookie on the OAuth callback (@1ikeadragon)
+
 # v5.1.1
 
 ## Release Highlights
