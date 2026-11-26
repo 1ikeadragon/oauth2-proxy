@@ -804,8 +804,13 @@ func (p *OAuthProxy) OAuthCallback(rw http.ResponseWriter, req *http.Request) {
 func (p *OAuthProxy) AuthenticateOnly(rw http.ResponseWriter, req *http.Request) {
 	session, err := p.getAuthenticatedSession(rw, req)
 	if err != nil {
-		http.Error(rw, "unauthorized request", http.StatusUnauthorized)
-		return
+		// Chained proxies may have already authenticated the user upstream; reuse that identity.
+		if email := req.Header.Get("X-Forwarded-Email"); email != "" {
+			session = &sessionsapi.SessionState{Email: email, User: req.Header.Get("X-Forwarded-User")}
+		} else {
+			http.Error(rw, "unauthorized request", http.StatusUnauthorized)
+			return
+		}
 	}
 
 	// we are authenticated
