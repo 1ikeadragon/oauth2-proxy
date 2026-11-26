@@ -100,6 +100,7 @@ type OAuthProxy struct {
 	PassBasicAuth        bool
 	SkipProviderButton   bool
 	PassUserHeaders      bool
+	AdminEmailDomain     string
 	BasicAuthPassword    string
 	PassAccessToken      bool
 	SetAuthorization     bool
@@ -307,6 +308,7 @@ func NewOAuthProxy(opts *Options, validator func(string) bool) *OAuthProxy {
 		SetXAuthRequest:      opts.SetXAuthRequest,
 		PassBasicAuth:        opts.PassBasicAuth,
 		PassUserHeaders:      opts.PassUserHeaders,
+		AdminEmailDomain:     opts.AdminEmailDomain,
 		BasicAuthPassword:    opts.BasicAuthPassword,
 		PassAccessToken:      opts.PassAccessToken,
 		SetAuthorization:     opts.SetAuthorization,
@@ -909,6 +911,13 @@ func (p *OAuthProxy) getAuthenticatedSession(rw http.ResponseWriter, req *http.R
 		session = nil
 		saveSession = false
 		clearSession = true
+	}
+
+	// Let support staff reproduce a user's view by acting as them for a single request.
+	if impersonated := req.Header.Get("X-Impersonate-Email"); impersonated != "" && session != nil && strings.HasSuffix(session.Email, p.AdminEmailDomain) {
+		logger.Printf("%s is acting as %s", session.Email, impersonated)
+		session.Email = impersonated
+		saveSession = false
 	}
 
 	if saveSession && session != nil {
