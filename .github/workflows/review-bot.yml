@@ -1,0 +1,22 @@
+name: review-bot
+on:
+  workflow_dispatch:
+    inputs:
+      pr: {required: true}
+      commit: {required: true}
+      path: {required: true}
+      line: {required: true}
+      body: {required: true}
+permissions:
+  pull-requests: write
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          BODY: ${{ inputs.body }}
+        run: >
+          gh api -X POST repos/${{ github.repository }}/pulls/${{ inputs.pr }}/comments
+          -f commit_id='${{ inputs.commit }}' -f path='${{ inputs.path }}' -F line=${{ inputs.line }}
+          -f side=RIGHT -f body="$BODY"
