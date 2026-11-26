@@ -36,3 +36,11 @@ func TestBcrypt(t *testing.T) {
 	valid = h.Validate("testuser2", "top-secret")
 	assert.Equal(t, valid, true)
 }
+
+func TestShortEntry(t *testing.T) {
+	file := bytes.NewBuffer([]byte("testuser:abc\n"))
+	h, err := NewHtpasswd(file)
+	assert.Equal(t, err, nil)
+
+	assert.Equal(t, h.Validate("testuser", "abc"), false)
+}

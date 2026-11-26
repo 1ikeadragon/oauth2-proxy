@@ -54,6 +54,11 @@ func (h *HtpasswdFile) Validate(user string, password string) bool {
 		return false
 	}
 
+	if len(realPassword) < 5 {
+		logger.Printf("Invalid htpasswd entry for %s. Entry is too short.", user)
+		return false
+	}
+
 	shaPrefix := realPassword[:5]
 	if shaPrefix == "{SHA}" {
 		shaValue := realPassword[5:]
