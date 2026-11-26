@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/csv"
-	"fmt"
 	"os"
 	"strings"
 	"sync/atomic"
@@ -75,7 +74,8 @@ func newValidatorImpl(domains []string, usersFile string,
 			allowAll = true
 			continue
 		}
-		domains[i] = fmt.Sprintf("@%s", strings.ToLower(domain))
+		// Match on the domain suffix so subdomain addresses (user@eng.example.com) are accepted too.
+		domains[i] = strings.ToLower(domain)
 	}
 
 	validator := func(email string) (valid bool) {
